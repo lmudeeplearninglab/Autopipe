@@ -12,7 +12,7 @@ from autopipe import serialize as srl
 from autopipe import image_process as ip
 
 #defining function which defines and runs learning model when passing a training set and K-fold parameter
-def run_keras_lenet_model(train, K):
+def run_keras_lenet_model(train):
     #Model defined to have sequentially defined layers
     model = Sequential()
 
