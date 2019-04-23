@@ -11,6 +11,8 @@ from keras.utils.np_utils import to_categorical
 from autopipe import serialize as srl
 from autopipe import image_process as ip
 
+from sklearn.model_selection import KFold
+
 #defining function which defines and runs learning model when passing a training set and K-fold parameter
 def run_keras_lenet_model(train):
     #Model defined to have sequentially defined layers
@@ -63,15 +65,20 @@ def run_keras_lenet_model(train):
 if __name__ == "__main__":
     data_pkl = '../data/serialized/autopipe-' + str(ip.END_IMAGE_SIZE[0]) + '-data.pkl'
     data = srl.load_data(data_pkl)
-
+ 
     #defines dataset tuples
     X_train, y_train = data["train"]
-    X_valid, y_valid = data["valid"]
     X_test, y_test = data['test']
-
+   
+    K = 10
+    #implement k-fold cross validation
+    kf = KFold(n_splits=K)
+    for train_index, test_index in kf.split(X_train):
+         X_train, X_val = X[train_index], X[test_index]
+         y_train, y_val = y[train_index], y[test_index]  
     
-    normalized_data = {"train": [ip.preprocess(X_train), to_categorical(y_train)],
-                       "valid": [ip.preprocess(X_valid), to_categorical(y_valid)],
-                       "test": [ip.preprocess(X_test), to_categorical(y_test)]}
-
-    run_keras_lenet_model(normalized_data)
+         normalized_data = {"train": [ip.preprocess(X_train), to_categorical(y_train)],
+                            "val": [ip.preprocess(X_val), to_categorically(y_val)],
+                            "test": [ip.preprocess(X_test), to_categorical(y_test)]}
+         
+         run_keras_lenet_model(normalized_data)
