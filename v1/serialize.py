@@ -46,10 +46,11 @@ def serialize_images(dir):
         labels.append(0)
 
     X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size=0.2, random_state=1)
-    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=1)
+    #remove separation of val in here since we will utilize k-fold technique in main
+    #X_train, X_val, y_train, y_val = Kfold(X_train, y_train, test_size=0.2, random_state=1)
     print(os.getcwd())
     data = {'train': [X_train, y_train],
-            'valid': [X_val, y_val],
+            #'valid': [X_val, y_val],
             'test': [X_test, y_test],
             "mean:": np.mean(X_train)}
 
