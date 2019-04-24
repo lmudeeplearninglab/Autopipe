@@ -1,0 +1,36 @@
+## Autopipe
+
+For easy setup of your environment, install Anaconda and use the following:
+`conda env create -f environment.yml`
+
+`source activate autopipe`
+
+This will install all libraries and dependencies required to run the programs
+
+serialize.py will write a directory of images to disk as a binary dictionary containing
+numpy arrays of image pixels.  When writing to disk, the data is split into a train/test/valid set.
+
+It is also used to deserialize the .pkl file for future use.
+
+image_process.py is used for preprocessing of the images.
+Grayscaling, image normalization is done here.
+
+`python serialize.py` will get all the data from a specific folder and serialize it into a .pkl file
+that can be loaded up as a .  The actual images should be split into defect and nondefect directories.
+These should be taken off of AWS.
+
+`python model.py` will create a model based on the location of the data_pkl file.  Make sure to modify
+where the location is.
+
+Define where the model is actually located after generating it in `predictions.py`
+
+To run the entire program, from the root directory (autopipe) type: 
+`make gui`
+
+## UI
+
+Inside the ui folder contains the ui file that can be modified in qt designer.
+This is a temporary file that generates a skeleton of our ui code.
+The actual logic for the ui is defined inside autopipe/gui.py
+
+To rebuild the UI: `make bgui`
