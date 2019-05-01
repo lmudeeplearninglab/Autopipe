@@ -68,7 +68,7 @@ def run_keras_lenet_model(train, iteration):
     #modified model save name to include train name
     #commented out for local run
 	#model.save('../data/models/lenet_' + str(ip.END_IMAGE_SIZE[0]) + train + '.h5')
-    print(train)
+    #debug:print(train)
     model.save('data/models/lenet_' + str(ip.END_IMAGE_SIZE[0]) + 'train' + str(iteration) + '.h5')
 
 #if model.py is executed perform this
