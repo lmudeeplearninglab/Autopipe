@@ -2,7 +2,11 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-from autopipe import serialize as serial
+#commented out to run locally
+#from autopipe import serialize as serial
+
+#added to run locally
+import serialize as serial
 
 # modify this to fit the size of images that are used for
 # training and classifying

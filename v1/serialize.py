@@ -4,8 +4,11 @@ import os
 import pickle
 from sklearn.model_selection import train_test_split
 
-from autopipe import image_process as ip
+#commented out to run locally
+#from autopipe import image_process as ip
 
+#added to run locally
+import image_process as ip
 
 def process_before_serialize(img):
     img = ip.crop_image(img)
@@ -18,8 +21,8 @@ def serialize_images(dir):
     """
     # defect and nondefect directories are relative directories
     # from the img_dir defined in main()
-    defect_dir = dir + "unprocessed/defect/"
-    nondefect_dir = dir + "unprocessed/nondefect_balanced/"
+    defect_dir = dir + "/unprocessed/defect/"
+    nondefect_dir = dir + "/unprocessed/nondefect_balanced/"
     defect_images = os.listdir(defect_dir)
     nondefect_images = os.listdir(nondefect_dir)
 
@@ -54,7 +57,7 @@ def serialize_images(dir):
             'test': [X_test, y_test],
             "mean:": np.mean(X_train)}
 
-    with open('../data/serialized/autopipe-' + str(desired_size[0]) + '-data.pkl', 'wb') as pkl_file:
+    with open('data/serialized/autopipe-' + str(desired_size[0]) + '-data.pkl', 'wb') as pkl_file:
         pickle.dump(data, pkl_file)
 
 
@@ -70,7 +73,7 @@ def load_data(pkl):
 
 def main():
     # modify this for your top level folder containing the data set
-    img_dir = "C:\\Users\\Andrew\\Google Drive\\Projects\\image_extraction\\data\\classifications/"
+    img_dir = ".\data"
     serialize_images(img_dir)
 
 
