@@ -21,7 +21,7 @@ import image_process as ip
 from sklearn.model_selection import KFold
 
 #defining function which defines and runs learning model when passing a training set and K-fold parameter
-def run_keras_lenet_model(train, iteration):
+def run_keras_lenet_model(train, iteration, epos):
     #Model defined to have sequentially defined layers
     model = Sequential()
 
@@ -60,16 +60,15 @@ def run_keras_lenet_model(train, iteration):
     #Changed nb_epoch to epochs
     model.fit(train['train'][0], train['train'][1],
               validation_data=(train['val'][0], train['val'][1]),
-              shuffle=True, epochs=10)
+              shuffle=True, epochs=epos, verbose=1)
 
-    score = model.evaluate(train["test"][0], train['test'][1], verbose=0)
-    print(score)   
+    score = model.evaluate(train["test"][0], train['test'][1], verbose=1)
+    print("Test loss, Test accuracy: ", score)   
     
     #modified model save name to include train name
     #commented out for local run
 	#model.save('../data/models/lenet_' + str(ip.END_IMAGE_SIZE[0]) + train + '.h5')
-    #debug:print(train)
-    model.save('data/models/lenet_' + str(ip.END_IMAGE_SIZE[0]) + 'train' + str(iteration) + '.h5')
+    model.save('data/models/lenet_' + str(ip.END_IMAGE_SIZE[0]) + 'train' + str(iteration) + 'epos' + str(epos) + '.h5')
 
 #if model.py is executed perform this
 if __name__ == "__main__":
@@ -91,7 +90,7 @@ if __name__ == "__main__":
     K = 10
     counter = 0
     #implement k-fold cross validation
-    kf = KFold(n_splits=K)
+    kf = KFold(n_splits=K, shuffle=True)
     for train_index, test_index in kf.split(X_train):
          counter = counter + 1
 		 #debugging
@@ -103,4 +102,13 @@ if __name__ == "__main__":
                             "val": [ip.preprocess(X_v), to_categorical(y_v)],
                             "test": [ip.preprocess(X_test), to_categorical(y_test)]}
          
-         run_keras_lenet_model(normalized_data, counter)
+         #run_keras_lenet_model(normalized_data, counter, 10)
+         run_keras_lenet_model(normalized_data, counter, 25)
+         #run_keras_lenet_model(normalized_data, counter, 30)
+         #run_keras_lenet_model(normalized_data, counter, 40)
+         #run_keras_lenet_model(normalized_data, counter, 50)
+         #run_keras_lenet_model(normalized_data, counter, 60)
+         #run_keras_lenet_model(normalized_data, counter, 70)
+         #run_keras_lenet_model(normalized_data, counter, 80)
+         #run_keras_lenet_model(normalized_data, counter, 90)
+		 #run_keras_lenet_model(normalized_data, counter, 100)
