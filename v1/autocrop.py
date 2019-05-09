@@ -8,29 +8,48 @@ import os
 import glob
 import time
 
+# This function is used to automatically crop the
+# inputted image to a specified dimension
+
+
 def autocrop(img):
     
-    grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    ##### Adjustable parameters #####
     
-    grey = grey[0:int(np.shape(grey)[0] * 0.8),0:int(np.shape(grey)[1])]
+    cut_off = 0.8           # Crops the bottom 20% of the image
+    
+    threshold = 0.1         # Threshold the lower 10% of pixels value
+                            # (Trying to generate mask of dark area)
+        
+    erode = 25              # Matrix of ones used to erode mask to find  
+                            # center of mass of tunnel
+        
+    xdim = 450; ydim = 350  # Cropping dimensions
+    
+    # Used to obtain the pixel value at the specified threshold value
+    grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    grey = grey[0:int(np.shape(grey)[0] * cut_off),0:int(np.shape(grey)[1])]
     array = np.reshape(grey,(np.size(grey)))
-    
     array.sort()
-    grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    grey = grey[0:int(np.shape(grey)[0]*.8),0:int(np.shape(grey)[1])]
-
-    mask = np.zeros(np.shape(grey))
-    mask[grey < array[int(0.10*len(array))]] = 1
-
-    cof = cv2.erode(mask, np.ones((25,25)), iterations = 1)
-    y, x = ndimage.measurements.center_of_mass(cof)
-
-    xdim = 550; ydim = 350
     
+    # Generates a mask from the inputted photo
+    grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    grey = grey[0:int(np.shape(grey)[0] * cut_off),0:int(np.shape(grey)[1])]
+    mask = np.zeros(np.shape(grey))
+    mask[grey < array[int(threshold * len(array))]] = 1
+
+    # Erodes mask to only contain the tunnel and remove noise
+    cof = cv2.erode(mask, np.ones((erode,erode)), iterations = 1)
+    
+    # Determines the center of mass of the mask and then calculates 
+    # where to begin and end the crop
+    y, x = ndimage.measurements.center_of_mass(cof)
     [xstart, xend, ystart, yend] = [0, 0, 0, 0]
     xstart = int(x - xdim/2); ystart = int(y - ydim/2)
     xend = int(x + xdim/2); yend = int(y + ydim/2)
 
+    # If the crop goes beyond the image dimensions, adjustments
+    # are made to take this into account 
     if xstart < 0:
         xend = xend - xstart + 1
         xstart = 0
@@ -46,7 +65,6 @@ def autocrop(img):
     plt.subplot(121)        
     cropped = Image.fromarray(grey)  
     cropped = grey[ystart: yend, xstart:xend]
-    print(np.shape(cropped))
     plt.imshow(cropped,'gray')
     plt.title('Cropped Image')
     plt.subplot(122)#plt.figure()
@@ -56,11 +74,13 @@ def autocrop(img):
     plt.title('Cropped Area');plt.show()
     return cropped
 
+# Addresses of the input image folder, minimum is 1
 img_dir = ["/Users/alexlee/Desktop/Autopipe-master/v1/data2/classifications/DefectsPreprocessed/",
                  "/Users/alexlee/Desktop/Autopipe-master/v1/data2/classifications/NondefectsPreprocessed/",
                  "/Users/alexlee/Desktop/Autopipe-master/v1/data2/unprocessed/DefectsPreprocessed/",
                  "/Users/alexlee/Desktop/Autopipe-master/v1/data2/unprocessed/NondefectsPreprocessed/"]
 
+# Addresses of the output image folder, minimum is 1
 img_write_dir = ["/Users/alexlee/Desktop/Autopipe-master/v1/data2/classifications/DefectsCropped/",
                  "/Users/alexlee/Desktop/Autopipe-master/v1/data2/classifications/NondefectsCropped/",
                  "/Users/alexlee/Desktop/Autopipe-master/v1/data2/unprocessed/DefectsCropped/",
@@ -72,6 +92,7 @@ for n in range(0,len(img_dir)):
     files = glob.glob(data_path)
     
     for m in range(0,len(files)):
+        
         img = cv2.imread(files[m])
         img = autocrop(img)
         #time.sleep(2)    

@@ -5,18 +5,28 @@ import numpy as np
 
 def TextOut(img):
     
+    ##### Adjustable parameters #####
+    threshold = 35              # The threshold value used to extract the letters
+    
+    dilate = 2                  # Used to expand the size of objects within the 
+                                # mask to obtain the edges of the letters
+    
+    blur = 35                   # Determines amount of blurring used to obtain
+                                # pixel values for the mask
+        
+    
     # Converts BGR to grey colors
     grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
     # Through thresholding, finds letters and bottom right figure
     mask = np.zeros(np.shape(grey))
-    mask[grey < 35] = 1
+    mask[grey < threshold] = 1
     
-    mask = cv2.dilate(mask, np.ones((2,2)), iterations = 1)
+    mask = cv2.dilate(mask, np.ones((dilate,dilate)), iterations = 1)
 
     # Blurs greyscaled image
     # Larger values tend to work better
-    gaussian = cv2.GaussianBlur(grey,(35,35),0)
+    gaussian = cv2.GaussianBlur(grey,(blur,blur),0)
     
     # Applies blurred pixels to letters and bottom right figure
     output = (mask * gaussian) + (grey * np.absolute(mask-1))
