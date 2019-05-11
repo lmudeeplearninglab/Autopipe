@@ -44,6 +44,7 @@ def train_model(train, iteration, epos, weights=""):
     epochs = range(1, len(loss_values)+1)
     
     #plot training accuracy and loss
+    #blue is training set and red is validation set
     plt.plot(epochs, loss_values, 'b--', epochs, val_loss_values, 'r-')
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
@@ -82,9 +83,9 @@ def create_model():
     model.add(Convolution2D(filters = 6, kernel_size=(3, 3), activation='relu'))	    #Third Layer: Second convolution layer
     model.add(MaxPooling2D())					#Fourth layer: Second Max pooling layer
     model.add(Flatten())						#Flattens output of max pooling layer for input into Fully Connected Neural Network
-    model.add(Dropout(0.7))						#Fifth layer : First dropout layer
+    model.add(Dropout(0.5))						#Fifth layer : First dropout layer
     model.add(Dense(120, activation='relu'))	#Sixth Layer: First FC layer 120 nodes
-    #model.add(Dropout(0.5))						#Seventh layer: Second dropout layer
+    model.add(Dropout(0.5))						#Seventh layer: Second dropout layer
     model.add(Dense(84))    					#Eighth layer: Second FC layer 84 nodes
     model.add(Dense(2, activation='softmax'))	#Ninth layer: Output layer
     return model
