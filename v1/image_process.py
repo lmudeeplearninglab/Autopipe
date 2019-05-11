@@ -10,7 +10,8 @@ import serialize as serial
 
 # modify this to fit the size of images that are used for
 # training and classifying
-END_IMAGE_SIZE = (320, 720)
+#images defined as column, row - due to cv2.resize call
+END_IMAGE_SIZE = (200, 150)
 
 
 def region_of_interest(img, vertices):
@@ -124,16 +125,16 @@ def grayscale(image):
 
 
 def crop_image(image, gray=False):
-    """Crop an image from range[y, x]"""
+    """Crop an image from range[rows, cols]"""
     #return image[180:365, 20:620, :] if not gray else image[180:365, 20:620]
 	#utilze whole image instead of cropped image
 	#cropping out bottom third of image
     rows, cols, depth = image.shape
-    verticalcropupper = 0
-    verticalcroplower = rows * 2 / 3
-    horizontalcropleft = 0
-    horizontalcropright = cols
-    return image[verticalcropupper:verticalcroplower, horizontalcropleft:horizontalcropright, :] if not gray else image[verticalcropupper:verticalcroplower, horizontalcropleft:horizontalcropright]
+    upper_row = int(0)
+    lower_row = int(rows * 2 / 3)
+    left_col = int(0)
+    right_col = int(cols)
+    return image[upper_row:lower_row, left_col:right_col, :] if not gray else image[upper_row:lower_row, left_col:right_col]
 
 def flip_image(image):
     #returns vertically flipped image
@@ -226,7 +227,7 @@ def combine_thresholds(image, display=False):
     return combined_binary
 
 
-def preprocess(data, real_time=True):
+def preprocess(data, real_time=False):
     """Subtracting the mean and dividing by 
     standard deviation of of the features
     """
