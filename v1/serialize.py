@@ -12,6 +12,7 @@ import image_process as ip
 
 def process_before_serialize(img):
     img = ip.crop_image(img)
+    #resize(source iamge, tuple[dx, dy])
     return cv2.resize(img, ip.END_IMAGE_SIZE)
 
 
@@ -31,6 +32,7 @@ def serialize_images(dir):
 
     desired_size = ip.END_IMAGE_SIZE
     for image in defect_images:
+        #images defined in rows, columns
         image = cv2.imread(defect_dir + image)
         image = process_before_serialize(image)
         images.append(image)
